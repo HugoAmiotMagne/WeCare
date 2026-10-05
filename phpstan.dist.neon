@@ -1,0 +1,11 @@
+includes:
+    # Erreurs existantes au moment de l'introduction de PHPStan : la CI ne bloque que les nouvelles.
+    # À réduire progressivement (vendor/bin/phpstan analyse --generate-baseline phpstan-baseline.neon)
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests
+    tmpDir: var/phpstan

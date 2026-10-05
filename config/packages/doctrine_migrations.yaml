@@ -4,3 +4,6 @@ doctrine_migrations:
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
     enable_profiler: false
+    # MariaDB/MySQL valident implicitement chaque ordre DDL (CREATE/ALTER) :
+    # une transaction autour des migrations n'apporte rien et génère une dépréciation
+    transactional: false

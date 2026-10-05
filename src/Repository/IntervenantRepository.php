@@ -32,6 +32,22 @@ class IntervenantRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /** @return Intervenant[] — intervenants disponibles (statut actif), optionnellement limités à un admin */
+    public function findDisponibles(?Administrateur $admin = null): array
+    {
+        $qb = $this->createQueryBuilder('iv')
+            ->join('iv.utilisateur', 'u')
+            ->addSelect('u')
+            ->andWhere('iv.disponibilite = true')
+            ->orderBy('u.nom', 'ASC');
+
+        if ($admin !== null) {
+            $qb->andWhere('iv.adminCreateur = :admin')->setParameter('admin', $admin);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function countActifsCeMois(): int
     {
         $debut = new \DateTime('first day of this month midnight');

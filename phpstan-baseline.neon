@@ -1,0 +1,175 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Controller/Admin/DashboardController.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Entity\\Utilisateur\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Controller/Admin/DashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Controller/Admin/DashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Controller/Admin/NotificationsController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Controller/Admin/PatientsController.php
+
+		-
+			message: '#^Comparison operation "\<" between 0\|1\|2\|3\|4\|5\|6 and 7 is always true\.$#'
+			identifier: smaller.alwaysTrue
+			count: 1
+			path: src/Controller/Admin/SoignantsController.php
+
+		-
+			message: '#^Comparison operation "\>\=" between 0\|1\|2\|3\|4\|5\|6 and 0 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: src/Controller/Admin/SoignantsController.php
+
+		-
+			message: '#^Result of && is always true\.$#'
+			identifier: booleanAnd.alwaysTrue
+			count: 1
+			path: src/Controller/Admin/SoignantsController.php
+
+		-
+			message: '#^Call to an undefined method App\\Entity\\Beneficiaire\:\:getAidant\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Controller/Beneficiaire/MonCompteController.php
+
+		-
+			message: '#^Call to an undefined method App\\Entity\\Beneficiaire\:\:getAidant\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/Intervenant/BeneficiaireController.php
+
+		-
+			message: '#^Property App\\Entity\\Abonnement\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Abonnement.php
+
+		-
+			message: '#^Property App\\Entity\\Administrateur\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Administrateur.php
+
+		-
+			message: '#^Property App\\Entity\\Aidant\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Aidant.php
+
+		-
+			message: '#^Property App\\Entity\\Beneficiaire\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Beneficiaire.php
+
+		-
+			message: '#^Property App\\Entity\\CompteRendu\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/CompteRendu.php
+
+		-
+			message: '#^Property App\\Entity\\Entreprise\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Entreprise.php
+
+		-
+			message: '#^Property App\\Entity\\Incident\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Incident.php
+
+		-
+			message: '#^Property App\\Entity\\Intervenant\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Intervenant.php
+
+		-
+			message: '#^Property App\\Entity\\Intervenant\:\:\$statut \(string\|null\) is never assigned null so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Intervenant.php
+
+		-
+			message: '#^Property App\\Entity\\Intervention\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Intervention.php
+
+		-
+			message: '#^Property App\\Entity\\Message\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Message.php
+
+		-
+			message: '#^Property App\\Entity\\Notification\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Notification.php
+
+		-
+			message: '#^Property App\\Entity\\PlanTarifaire\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/PlanTarifaire.php
+
+		-
+			message: '#^Property App\\Entity\\Planning\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Planning.php
+
+		-
+			message: '#^Property App\\Entity\\Utilisateur\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/Utilisateur.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Entity/Utilisateur.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: null$#'
+			identifier: match.unhandled
+			count: 1
+			path: src/Security/LoginSuccessHandler.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with null will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/WeCareUnitTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with ''Symfony\\\\Component\\\\Dotenv\\\\Dotenv'' and ''bootEnv'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/bootstrap.php

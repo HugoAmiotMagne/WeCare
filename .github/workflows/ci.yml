@@ -1,0 +1,111 @@
+name: CI/CD WeCare
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Tests unitaires + intégration contre une vraie MariaDB ──────────────
+  test:
+    runs-on: ubuntu-latest
+    services:
+      database:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/wecare?serverVersion=11.4.0-MariaDB&charset=utf8mb4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, intl, zip
+          coverage: none
+      - uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+      - run: cp .env.example .env
+      - run: composer install --no-progress --no-interaction --prefer-dist
+      - name: Base de test (schéma + fixtures)
+        run: composer test:db
+      - name: Tests unitaires
+        run: php bin/phpunit --testsuite unit
+      - name: Tests d'intégration
+        run: php bin/phpunit --testsuite integration
+
+  # ── 2. Qualité : analyse statique ─────────────────────────────────────────
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, zip
+          coverage: none
+      - run: cp .env.example .env
+      - run: composer install --no-progress --no-interaction --prefer-dist
+      - run: composer validate --no-check-publish
+      - run: php bin/console lint:container
+      - run: php bin/console lint:twig templates
+      - run: php bin/console lint:yaml config
+      - run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+  # ── 3. Build des images Docker de production ──────────────────────────────
+  build:
+    needs: [test, quality]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Image PHP (prod)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: app_prod
+          tags: wecare-app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Image Caddy (prod)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: caddy_prod
+          tags: wecare-caddy:${{ github.sha }}
+          cache-from: type=gha
+
+  # ── 4. Déploiement sur le VPS (master uniquement) ─────────────────────────
+  # Activé en définissant la variable de dépôt DEPLOY_ENABLED=true
+  # et les secrets VPS_HOST, VPS_USER, VPS_SSH_KEY (Settings > Secrets and variables > Actions).
+  deploy:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            cd /var/www/wecare
+            git pull --ff-only origin master
+            export IMAGE_TAG=$(git rev-parse --short HEAD)
+            docker compose up -d --build
+            docker compose exec -T php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+            echo "$(date -Iseconds) $IMAGE_TAG" >> .deploy-history
+            docker image prune -f

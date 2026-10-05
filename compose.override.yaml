@@ -1,10 +1,32 @@
+# Surcharge DEV — chargée automatiquement par `docker compose up` en local.
 
 services:
-###> doctrine/doctrine-bundle ###
+  php:
+    build:
+      target: app_dev
+    image: wecare-app-dev
+    environment:
+      APP_ENV: dev
+    volumes:
+      - ./:/app
+      # var/ et vendor/ restent dans le conteneur : le cache Symfony contient des
+      # chemins absolus, et vendor/ doit correspondre à l'image Linux, pas à l'hôte
+      - /app/var
+      - /app/vendor
+
+  caddy:
+    image: caddy:2.10
+    build: !reset null
+    environment:
+      SERVER_NAME: ${SERVER_NAME_DEV:-http://localhost}
+    volumes:
+      - ./public:/app/public:ro
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
   database:
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      # Accès depuis l'hôte (DBeaver, HeidiSQL...) — 3307 pour ne pas gêner un MySQL local
+      - "${DB_PORT:-3307}:3306"
 
 ###> symfony/mailer ###
   mailer:
